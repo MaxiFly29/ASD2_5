@@ -49,9 +49,9 @@ private:
 
 int main() {
     vector<int> rvec(1e7);
-    for (int& x : rvec)
-        x = rand() % 1'000'000;
     for (int i = 0; i < 10; i++) {
+        for (int& x : rvec)
+            x = rand() % 1'000'000;
         HashSet<int> hs(1e7);
         {
             LOG_DURATION("method Add - " + to_string(i + 1));
@@ -63,20 +63,20 @@ int main() {
         {
             LOG_DURATION("method Find (exists) - " + to_string(i + 1));
             for (int j = 0; j < 1e7; j++) {
-                auto f = hs.Has(rvec[j]);
+                volatile auto f = hs.Has(rvec[j]);
             }
         }
 
         {
             LOG_DURATION("method Find (not exists) - " + to_string(i + 1));
-            for (int j = 0; j < 1e6; j++) {
-                auto f = hs.Has(rvec[j] + 1e7);
+            for (int j = 0; j < 1e7; j++) {
+                volatile auto f = hs.Has(rvec[j] + 1e7);
             }
         }
 
         {
             LOG_DURATION("method orderedSequence - " + to_string(i + 1));
-            auto res = hs.orderedSequence();
+            volatile auto res = hs.orderedSequence();
         }
 
         {
